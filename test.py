@@ -15,17 +15,32 @@ def load_data():
     num_points = 500
     timestamps = [datetime.now() - pd.Timedelta(seconds=i) for i in range(num_points, 0, -1)]
     
-    # Bắt đầu với giá 'close'
-    close_prices = np.random.rand(num_points) * 100 + 27000
+    # --- Mô hình thị trường (Random Walk) ---
+    start_price = 27000
+    # Tạo 500 bước thay đổi ngẫu nhiên nhỏ
+    price_changes = np.random.uniform(-4, 4.05, num_points) # Thay đổi nhỏ cho mỗi bước
+    # Tính giá 'close' bằng cách cộng dồn các thay đổi (random walk)
+    close_prices = start_price + np.cumsum(price_changes)
+    
+    # Đảm bảo giá không bị âm
+    close_prices[close_prices <= 0] = 0.01 
+    # --- Kết thúc mô hình ---
     
     # Tạo open, high, low dựa trên 'close' để mô phỏng nến
     open_prices = []
     high_prices = []
     low_prices = []
     
-    for close in close_prices:
-        # open có thể cao hơn hoặc thấp hơn close một chút
-        open_price = close + np.random.uniform(-5, 5) 
+    for i in range(num_points):
+        close = close_prices[i]
+        
+        # Mở cửa dựa trên giá đóng cửa trước đó (hoặc ngẫu nhiên nếu là nến đầu)
+        if i > 0:
+            # Giá mở cửa hôm nay = giá đóng cửa hôm qua + một chút biến động
+            open_price = close_prices[i-1] + np.random.uniform(-2, 2)
+        else:
+            # Nến đầu tiên, giá mở cửa gần giá đóng cửa
+            open_price = close + np.random.uniform(-5, 5) 
         
         # high phải là cao nhất, low là thấp nhất
         high_price = max(open_price, close) + np.random.uniform(0, 3)
