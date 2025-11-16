@@ -11,11 +11,12 @@ import time # Đảm bảo bạn đã import time ở đầu file
 def load_data():
     # Tải dữ liệu cơ sở của bạn
     
-    # Tạo 10 điểm dữ liệu
-    timestamps = [datetime.now() - pd.Timedelta(seconds=i) for i in range(10, 0, -1)]
+    # Tạo 500 điểm dữ liệu
+    num_points = 500
+    timestamps = [datetime.now() - pd.Timedelta(seconds=i) for i in range(num_points, 0, -1)]
     
     # Bắt đầu với giá 'close'
-    close_prices = np.random.rand(10) * 100 + 27000
+    close_prices = np.random.rand(num_points) * 100 + 27000
     
     # Tạo open, high, low dựa trên 'close' để mô phỏng nến
     open_prices = []
@@ -40,7 +41,7 @@ def load_data():
         'high': high_prices,
         'low': low_prices,
         'close': close_prices,
-        'my_indicator': np.random.rand(10) * 50 + 27000 
+        # 'my_indicator': np.random.rand(num_points) * 50 + 27000 # Đã xoá theo yêu cầu
     })
     return df.set_index('timestamp')
 
@@ -56,10 +57,10 @@ def plot_chart(df):
                                 close=df['close'],
                                 name='Giá Cổ phiếu'))
     
-    # Chỉ báo của bạn (My Indicator) - vẫn là dạng đường
-    fig.add_trace(go.Scatter(x=df.index, y=df['my_indicator'], mode='lines', name='Chỉ báo AI', line=dict(color='red', dash='dot')))
+    # Chỉ báo của bạn (My Indicator) - ĐÃ BỎ THEO YÊU CẦU
+    # fig.add_trace(go.Scatter(x=df.index, y=df['my_indicator'], mode='lines', name='Chỉ báo AI', line=dict(color='red', dash='dot')))
     
-    fig.update_layout(title='Chỉ báo AI theo Thời gian Thực (Biểu đồ Nến)', 
+    fig.update_layout(title='Biểu đồ Giá theo Thời gian Thực (Biểu đồ Nến)', 
                       xaxis_title='Thời gian', 
                       yaxis_title='Giá trị',
                       xaxis_rangeslider_visible=False) # Tắt range slider để gọn gàng hơn
@@ -67,7 +68,7 @@ def plot_chart(df):
 
 # --- Ứng dụng Streamlit (Cập nhật Real-time) ---
 st.set_page_config(layout="wide")
-st.title("🚀 Dashboard Chỉ báo AI")
+st.title("🚀 Dashboard Giao dịch") # Đổi tiêu đề một chút
 
 # Thiết lập bộ chứa để biểu đồ có thể cập nhật
 placeholder = st.empty()
